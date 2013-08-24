@@ -1,16 +1,18 @@
 package thrift;
 
 // cc ThriftExample Example using the Thrift generated client API
-import org.apache.hadoop.hbase.thrift.generated.*;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
+import org.apache.hadoop.hbase.thrift.generated.ColumnDescriptor;
+import org.apache.hadoop.hbase.thrift.generated.Hbase;
+import org.apache.hadoop.hbase.thrift.generated.Mutation;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 public class ThriftExample {
 
@@ -44,14 +46,14 @@ public class ThriftExample {
 
       ArrayList<Mutation> mutations = new ArrayList<Mutation>();
       mutations.add(new Mutation(false, ByteBuffer.wrap(COLUMN),
-        ByteBuffer.wrap(VALUE)));
+        ByteBuffer.wrap(VALUE), true));
       client.mutateRow(ByteBuffer.wrap(TABLE), ByteBuffer.wrap(ROW),
-        mutations);
+        mutations, null);
 
       ArrayList<byte[]> columnNames = new ArrayList<byte[]>();
       columnNames.add(FAMILY2);
       int scannerId = client.scannerOpen(ByteBuffer.wrap(TABLE), null,
-        null);
+        null, null);
       while (client.scannerGet(scannerId) != null)
         ;
       client.scannerClose(scannerId);
